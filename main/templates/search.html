@@ -1,0 +1,103 @@
+{%extends "layout.html"%}
+{%load static%} 
+{%block body%}   
+<div class="container">
+   <div class="row">
+      <!-- Latest Posts -->
+      <main class="posts-listing col-lg-8">
+         <div class="container">
+            <div class="row">
+               <!-- post -->
+               {%for post in paginated_queryset%}
+               <div class="post col-xl-6">
+                  <div class="post-thumbnail">
+                     <a href="{{post.get_absolute_url}}"><img src="{{post.img.url}}" alt="..." class="img-fluid"></a>
+                  </div>
+                  <div class="post-details">
+                     <div class="post-meta d-flex justify-content-between">
+                        <div class="date meta-last">{{post.timestamp}}</div>
+                        <div class="category">
+                           {%for cat in post.category.all%}
+                           <a href="#">{{cat}}</a>
+                           {%endfor%}
+                        </div>
+                     </div>
+                     <a href="{{post.get_absolute_url}}">
+                        <h3 class="h4">{{post.title}}</h3>
+                     </a>
+                     <p class="text-muted">{{post.overview}}</p>
+                     <footer class="post-footer d-flex align-items-center">
+                        <a href="#" class="author d-flex align-items-center flex-wrap">
+                           <div class="avatar"><img src="{{post.author.profile_pic.url}}" alt="..." class="img-fluid"></div>
+                           <div class="title"><span>{{post.author.user.username}}</span></div>
+                        </a>
+                        <div class="date"><i class="icon-clock"></i>{{post.timestamp|timesince}}</div>
+                        <div class="comments meta-last"><i class="icon-comment"></i>{{post.comment_count}}</div>
+                     </footer>
+                  </div>
+               </div>
+               {%endfor%}
+            </div>
+            <!-- Pagination -->
+            {%if paginated_queryset%}
+            <nav aria-label="Page navigation example">
+               <ul class="pagination pagination-template d-flex justify-content-center">
+                  {%if paginated_queryset.has_previous%}
+                  <li class="page-item">
+                     <a href="?{%if query%}search={{query}}&{%endif%} page={{paginated_queryset.previous_page_number}}" class="page-link"> 
+                     <i class="fa fa-angle-left"></i>
+                     </a>
+                  </li>
+                  {%endif%}
+                  {%for num in paginated_queryset.paginator.page_range%}
+                  <!--while we loopig on the page if the num is equal to the current page we want to display it diffrently-->
+                  {%if paginated_queryset.number == num%}
+                  <li class="page-item">
+                     <a href="?{%if query%}search={{query}}&{%endif%}page={{num}}" class="">{{num}}</a>
+                  </li>
+                  {% elif num > paginated_queryset.number|add:'-3' and paginated_queryset.number < num|add:'3'%}
+                  <li class="page-item">
+                     <a href="?{%if query%}search={{query}}&{%endif%}page={{num}}" class="page-link">{{num}}</a>
+                  </li>
+                  {%endif%}
+                  {%endfor%}
+                  {%if paginated_queryset.has_next%}
+                  <li class="page-item">
+                     <a href="?{%if query%}search={{query}}&{%endif%}page={{paginated_queryset.next_page_number}}" class="page-link"> 
+                     <i class="fa fa-angle-right"></i>
+                     </a>
+                  </li>
+                  {%endif%}
+               </ul>
+            </nav>
+            {%else%}
+            <style>
+               .card{
+               max-width: 700px;
+               width: 100%;
+               }
+               .card-body{
+               padding:20px;
+               }
+            </style>
+            <div class="container">
+               <div class="row">
+                  <div class="card m-auto">
+                     <div class="card-body mt-2 mb-2">
+                        <h2 class="mb-2">
+                           No results!
+                        </h2>
+                        <p>
+                           there is no result matching your search ({{query}}) !
+                        </p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            {%endif%}
+         </div>
+      </main>
+      {%include "sidebar.html"%}
+   </div>
+</div>
+{%endblock%}
