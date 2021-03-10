@@ -105,7 +105,7 @@ def get_blog_query_post(query=None):
     
 def search(request):
     posts=Post.objects.all()
-    #if no value bassed for seatch set deffult of nothing search=""
+    #if no value passed to search set deffult of nothing search=""
     context={}
     query=""
     if request.GET:
