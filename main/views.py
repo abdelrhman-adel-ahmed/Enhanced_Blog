@@ -21,7 +21,7 @@ def get_author(user):
         return None 
 
 def home(request):
-    posts=Post.objects.filter(featured=True)
+    posts=Post.objects.filter(featured=True).prefetch_related('author','category')
     latest=Post.objects.order_by('-timestamp')[:3]
 
     if request.method=='POST':
